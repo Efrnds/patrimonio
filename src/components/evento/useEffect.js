@@ -11,7 +11,7 @@ function Timer() {
 
     useEffect(() => {
         setTimeout(() => {
-            if (count < 1000) {
+            if (count < 1000000) {
                 setCount(count + 1);
             } else {
                 setCount(0);

@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Condicional from "./components/Condicional";
 import Evento from "./components/Evento";
 import Login from "./components/Form";
@@ -17,6 +17,8 @@ import Forms from "./pages/reactForms";
 import FavoriteColor from "./components/evento/useState";
 import Effect from "./components/evento/useEffect";
 import Context from "./components/evento/useContext";
+import Todos from "./components/evento/useReducer";
+import useFetch from "./components/evento/useFetch";
 
 function App() {
   const [nome, setNome] = useState('');
@@ -25,6 +27,16 @@ function App() {
   const inputElement = useRef();
   const [inputValue, setInputValue] = useState("");
   const previousInputValue = useRef("");
+  const [contar, setContar] = useState(0);
+  const [todos, setTodos] = useState([]);
+  const [data] = useFetch("https://jsonplaceholder.typicode.com/todos");
+
+  const increment = () => {
+    setContar((c) => c + 1);
+  };
+  const addTodo = useCallback(() => {
+    setTodos((t) => [...t, "New Todo"]);
+  }, [todos]);
 
   useEffect(() => {
     previousInputValue.current = inputValue;
@@ -95,6 +107,20 @@ function App() {
             </div>
             <div className="p-10 m-auto my-4 break-words rounded-lg bg-slate-100 w-fit max-h-80">
               <Context />
+            </div>
+            <div className="p-10 m-auto my-4 break-words rounded-lg bg-slate-100 w-fit max-h-80">
+              <Todos todos={todos} addTodo={addTodo} />
+              <hr />
+              <div>
+                Count: {contar}
+                <button onClick={increment}>+</button>
+              </div>
+            </div>
+            <div className="p-10 m-auto my-4 break-words rounded-lg min-h-fit bg-slate-100 w-fit">
+              {data &&
+                data.map((item) => {
+                  return <p key={item.id}>{item.title}</p>;
+                })}
             </div>
             <Effect />
           </section>
